@@ -55,6 +55,10 @@ public class Rectangle {
         return new Rectangle(toCopy.x, toCopy.y, toCopy.width, toCopy.height);
     }
 
+    /**
+     * ordnet das Rechteck auf dem diese Methode aufgerufen wird einer Speczies aus RectangleSpecies zu
+     * @return die zugehörige Species aus RectangleSpecies
+     */
     public RectangleSpecies determineSpecies()  {
         if (this.x == 0 && this.y == 0) {
             return RectangleSpecies.POINT;
