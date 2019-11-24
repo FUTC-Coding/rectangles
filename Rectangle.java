@@ -1,37 +1,78 @@
 package main;
 
-import jdk.jshell.execution.Util;
-
 public class Rectangle {
     int x,y,width,height;
 
+    /**
+     * Konstruktor der Klasse Rectangle der ein Rechteck mit den übergebenen Werten erstellt
+     * @param xInput die x-koordinate
+     * @param yInput die y-koordinate
+     * @param widthInput die Breite des Rechtecks
+     * @param heightInput die Hoehe des Rechtecks
+     * @return das erstellte Rechteck
+     */
     public Rectangle(int xInput, int yInput, int widthInput, int heightInput) {
         x = xInput;
         y = yInput;
-        if (widthInput > 0) {
+        if (widthInput >= 0) {
             width = widthInput;
         } else {
-            Utils.error("Breite kann nicht kleiner 1 sein");
+            Utils.error("Breite kann nicht kleiner 0 sein");
             return;
         }
 
-        if (heightInput > 0) {
+        if (heightInput >= 0) {
             height = heightInput;
         } else {
-            Utils.error("Hoehe kann nicht kleiner 1 sein");
+            Utils.error("Hoehe kann nicht kleiner 0 sein");
             return;
         }
     }
 
+    /**
+     * Konstruktor der Klasse Rectangle der Quadrat mit den übergebenen Werten erstellt
+     * @param xInput die x-koordinate
+     * @param yInput die y-koordinate
+     * @param sidelengthInput Die Seitenlaenge des Quadrats
+     */
     public Rectangle(int xInput, int yInput, Integer sidelengthInput) {
         x = xInput;
         y = yInput;
-        width = sidelengthInput;
-        height = sidelengthInput;
+        if (sidelengthInput >= 0) {
+            width = sidelengthInput;
+            height = sidelengthInput;
+        } else {
+            Utils.error("Seitenlaenge kann nicht kleiner 0 sein");
+        }
     }
 
-    public Rectangle copy(Rectangle toCopy) {
+    /**
+     * Gibt ein objekt der Klasse Rechteck zurück mit den gleichen werten als das übergebene Objekt
+     * @param toCopy Das Rechteck mit den Werten die kopiert werden sollen
+     * @return Das kopierte Rechteck
+     */
+    public static Rectangle copy(Rectangle toCopy) {
         return new Rectangle(toCopy.x, toCopy.y, toCopy.width, toCopy.height);
+    }
+
+    public RectangleSpecies determineSpecies()  {
+        if (this.x == 0 && this.y == 0) {
+            return RectangleSpecies.POINT;
+        } else if (this.x == 1 && this.y == 1) {
+            return RectangleSpecies.PIXEL;
+        } else if (this.height == 0 && this.width >= 1) {
+            return RectangleSpecies.HLINE;
+        } else if (this.height >= 1 && this.width == 0) {
+            return RectangleSpecies.VLINE;
+        } else if (this.width == this.height && this.width >= 2) {
+            return RectangleSpecies.SQUARE;
+        } else if (this.height == 1 && this.width >= 2) {
+            return RectangleSpecies.ROW;
+        } else if (this.height >= 2 && this.width == 1) {
+            return RectangleSpecies.COLUMN;
+        } else {
+            return RectangleSpecies.OTHER;
+        }
     }
 
     int getX() {
@@ -73,6 +114,17 @@ public class Rectangle {
         } else {
             Utils.error("Hoehe kann nicht kleiner 1 sein");
         }
+    }
+
+    /**
+     * Gibt die koordinaten aller ecken des Rechtecks als String an von dem Rechteck auf dem es aufgerufen wird
+     * @return koordinaten als string von der Ecke rechts unten gegen den Uhrzeigersinn
+     */
+    public String toString() {
+        return ("(" + Integer.toString(this.x + this.width) + "|" + Integer.toString(this.y - this.height) + "),(" +
+                Integer.toString(this.x + this.width) + "|" + (this.y) + "),(" +
+                Integer.toString(this.x) + "|" + Integer.toString(this.y) + "),(" +
+                Integer.toString(this.x) + "|" + Integer.toString(this.y - this.height) + ")");
     }
 
     //methode muss nicht auf ein Objekt aufgerufen werden deswegen als statisch deklariert
@@ -137,7 +189,11 @@ public class Rectangle {
             rnew.x = r1.x;
             rnew.y = r1.y;
             rnew.width = r2.x + r2.width - r1.x;
-            rnew.height = r1.y - (r2.y - r2.height);
+            if (r1.y - r1.height > r2.y - r2.height) {
+                rnew.height = r1.height;
+            } else {
+                rnew.height = r1.y - (r2.y - r2.height);
+            }
         } else if (status == 2) {
             rnew.x = r2.x;
             rnew.y = r1.y;
